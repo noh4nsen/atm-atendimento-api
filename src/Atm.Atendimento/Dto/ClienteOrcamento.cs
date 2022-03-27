@@ -3,8 +3,8 @@ using System;
 
 namespace Atm.Atendimento.Dto
 {
-    public class Carro
+    public class ClienteOrcamento : Entity
     {
-        public Guid Id { get; set; }
+        public Guid IdExterno { get; set; }
     }
 }

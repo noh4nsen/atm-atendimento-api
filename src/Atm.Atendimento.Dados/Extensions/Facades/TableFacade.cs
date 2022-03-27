@@ -10,6 +10,7 @@ namespace Atm.Atendimento.Dados.Extensions.Facades
             modelBuilder.SetupOrcamento();
             modelBuilder.SetupServico();
             modelBuilder.SetupPeca();
+            modelBuilder.SetupCustoServico();
         }
     }
 }

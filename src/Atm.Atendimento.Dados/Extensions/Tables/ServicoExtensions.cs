@@ -11,9 +11,6 @@ namespace Atm.Atendimento.Dados.Extensions.Tables
                         .Property(s => s.Nome)
                         .HasMaxLength(100)
                         .IsRequired();
-            modelBuilder.Entity<Servico>()
-                        .Property(s => s.Descricao)
-                        .HasMaxLength(255);
         }
     }
 }

@@ -8,25 +8,51 @@ namespace Atm.Atendimento.Dados.Migrations
         protected override void Up(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.CreateTable(
-                name: "Carro",
+                name: "CarroOrcamento",
                 columns: table => new
                 {
-                    Id = table.Column<Guid>(type: "uuid", nullable: false)
+                    Id = table.Column<Guid>(type: "uuid", nullable: false),
+                    IdExterno = table.Column<Guid>(type: "uuid", nullable: false),
+                    Ativo = table.Column<bool>(type: "boolean", nullable: false),
+                    DataCadastro = table.Column<DateTime>(type: "timestamp without time zone", nullable: false),
+                    DataAtualizacao = table.Column<DateTime>(type: "timestamp without time zone", nullable: true)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Carro", x => x.Id);
+                    table.PrimaryKey("PK_CarroOrcamento", x => x.Id);
                 });
 
             migrationBuilder.CreateTable(
-                name: "Cliente",
+                name: "ClienteOrcamento",
                 columns: table => new
                 {
-                    Id = table.Column<Guid>(type: "uuid", nullable: false)
+                    Id = table.Column<Guid>(type: "uuid", nullable: false),
+                    IdExterno = table.Column<Guid>(type: "uuid", nullable: false),
+                    Ativo = table.Column<bool>(type: "boolean", nullable: false),
+                    DataCadastro = table.Column<DateTime>(type: "timestamp without time zone", nullable: false),
+                    DataAtualizacao = table.Column<DateTime>(type: "timestamp without time zone", nullable: true)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Cliente", x => x.Id);
+                    table.PrimaryKey("PK_ClienteOrcamento", x => x.Id);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "ModoPagamento",
+                columns: table => new
+                {
+                    Id = table.Column<Guid>(type: "uuid", nullable: false),
+                    CartaoCredito = table.Column<bool>(type: "boolean", nullable: false),
+                    CartaoDebito = table.Column<bool>(type: "boolean", nullable: false),
+                    Dinheiro = table.Column<bool>(type: "boolean", nullable: false),
+                    Pix = table.Column<bool>(type: "boolean", nullable: false),
+                    Ativo = table.Column<bool>(type: "boolean", nullable: false),
+                    DataCadastro = table.Column<DateTime>(type: "timestamp without time zone", nullable: false),
+                    DataAtualizacao = table.Column<DateTime>(type: "timestamp without time zone", nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_ModoPagamento", x => x.Id);
                 });
 
             migrationBuilder.CreateTable(
@@ -35,15 +61,40 @@ namespace Atm.Atendimento.Dados.Migrations
                 {
                     Id = table.Column<Guid>(type: "uuid", nullable: false),
                     Nome = table.Column<string>(type: "character varying(100)", maxLength: 100, nullable: false),
-                    Descricao = table.Column<string>(type: "character varying(255)", maxLength: 255, nullable: true),
                     ValorAtual = table.Column<decimal>(type: "numeric", nullable: true),
                     CustoServicoAtual = table.Column<Guid>(type: "uuid", nullable: true),
+                    Ativo = table.Column<bool>(type: "boolean", nullable: false),
                     DataCadastro = table.Column<DateTime>(type: "timestamp without time zone", nullable: false),
                     DataAtualizacao = table.Column<DateTime>(type: "timestamp without time zone", nullable: true)
                 },
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_Servico", x => x.Id);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "Pagamento",
+                columns: table => new
+                {
+                    Id = table.Column<Guid>(type: "uuid", nullable: false),
+                    Percentual = table.Column<decimal>(type: "numeric", nullable: true),
+                    Desconto = table.Column<decimal>(type: "numeric", nullable: true),
+                    ValorFinal = table.Column<decimal>(type: "numeric", nullable: false),
+                    PagamentoEfetuado = table.Column<bool>(type: "boolean", nullable: false),
+                    ModoPagamentoId = table.Column<Guid>(type: "uuid", nullable: true),
+                    Ativo = table.Column<bool>(type: "boolean", nullable: false),
+                    DataCadastro = table.Column<DateTime>(type: "timestamp without time zone", nullable: false),
+                    DataAtualizacao = table.Column<DateTime>(type: "timestamp without time zone", nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Pagamento", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_Pagamento_ModoPagamento_ModoPagamentoId",
+                        column: x => x.ModoPagamentoId,
+                        principalTable: "ModoPagamento",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
                 });
 
             migrationBuilder.CreateTable(
@@ -54,14 +105,13 @@ namespace Atm.Atendimento.Dados.Migrations
                     ClienteId = table.Column<Guid>(type: "uuid", nullable: true),
                     CarroId = table.Column<Guid>(type: "uuid", nullable: true),
                     Descricao = table.Column<string>(type: "character varying(500)", maxLength: 500, nullable: true),
-                    Desconto = table.Column<decimal>(type: "numeric", nullable: true),
-                    ValorFinal = table.Column<decimal>(type: "numeric", nullable: false),
-                    ModoPagamento = table.Column<int[]>(type: "integer[]", nullable: true),
+                    PagamentoId = table.Column<Guid>(type: "uuid", nullable: true),
                     Status = table.Column<int>(type: "integer", nullable: false),
                     DataAgendamento = table.Column<DateTime>(type: "timestamp without time zone", nullable: true),
                     DataHoraInicio = table.Column<DateTime>(type: "timestamp without time zone", nullable: true),
                     DataHoraFim = table.Column<DateTime>(type: "timestamp without time zone", nullable: true),
                     Duracao = table.Column<double>(type: "double precision", nullable: true),
+                    Ativo = table.Column<bool>(type: "boolean", nullable: false),
                     DataCadastro = table.Column<DateTime>(type: "timestamp without time zone", nullable: false),
                     DataAtualizacao = table.Column<DateTime>(type: "timestamp without time zone", nullable: true)
                 },
@@ -69,15 +119,21 @@ namespace Atm.Atendimento.Dados.Migrations
                 {
                     table.PrimaryKey("PK_Orcamento", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_Orcamento_Carro_CarroId",
+                        name: "FK_Orcamento_CarroOrcamento_CarroId",
                         column: x => x.CarroId,
-                        principalTable: "Carro",
+                        principalTable: "CarroOrcamento",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Restrict);
                     table.ForeignKey(
-                        name: "FK_Orcamento_Cliente_ClienteId",
+                        name: "FK_Orcamento_ClienteOrcamento_ClienteId",
                         column: x => x.ClienteId,
-                        principalTable: "Cliente",
+                        principalTable: "ClienteOrcamento",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
+                    table.ForeignKey(
+                        name: "FK_Orcamento_Pagamento_PagamentoId",
+                        column: x => x.PagamentoId,
+                        principalTable: "Pagamento",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Restrict);
                 });
@@ -88,8 +144,10 @@ namespace Atm.Atendimento.Dados.Migrations
                 {
                     Id = table.Column<Guid>(type: "uuid", nullable: false),
                     Valor = table.Column<decimal>(type: "numeric", nullable: false),
+                    Descricao = table.Column<string>(type: "character varying(255)", maxLength: 255, nullable: true),
                     ServicoId = table.Column<Guid>(type: "uuid", nullable: true),
                     OrcamentoId = table.Column<Guid>(type: "uuid", nullable: true),
+                    Ativo = table.Column<bool>(type: "boolean", nullable: false),
                     DataCadastro = table.Column<DateTime>(type: "timestamp without time zone", nullable: false),
                     DataAtualizacao = table.Column<DateTime>(type: "timestamp without time zone", nullable: true)
                 },
@@ -120,6 +178,7 @@ namespace Atm.Atendimento.Dados.Migrations
                     ValorUnitario = table.Column<decimal>(type: "numeric", nullable: false),
                     ValorCobrado = table.Column<decimal>(type: "numeric", nullable: false),
                     OrcamentoId = table.Column<Guid>(type: "uuid", nullable: true),
+                    Ativo = table.Column<bool>(type: "boolean", nullable: false),
                     DataCadastro = table.Column<DateTime>(type: "timestamp without time zone", nullable: false),
                     DataAtualizacao = table.Column<DateTime>(type: "timestamp without time zone", nullable: true)
                 },
@@ -135,17 +194,24 @@ namespace Atm.Atendimento.Dados.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "Produto",
+                name: "ProdutoOrcamento",
                 columns: table => new
                 {
                     Id = table.Column<Guid>(type: "uuid", nullable: false),
-                    OrcamentoId = table.Column<Guid>(type: "uuid", nullable: true)
+                    IdExterno = table.Column<Guid>(type: "uuid", nullable: false),
+                    Quantidade = table.Column<int>(type: "integer", nullable: false),
+                    Percentual = table.Column<decimal>(type: "numeric", nullable: false),
+                    ValorTotal = table.Column<decimal>(type: "numeric", nullable: false),
+                    OrcamentoId = table.Column<Guid>(type: "uuid", nullable: true),
+                    Ativo = table.Column<bool>(type: "boolean", nullable: false),
+                    DataCadastro = table.Column<DateTime>(type: "timestamp without time zone", nullable: false),
+                    DataAtualizacao = table.Column<DateTime>(type: "timestamp without time zone", nullable: true)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Produto", x => x.Id);
+                    table.PrimaryKey("PK_ProdutoOrcamento", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_Produto_Orcamento_OrcamentoId",
+                        name: "FK_ProdutoOrcamento_Orcamento_OrcamentoId",
                         column: x => x.OrcamentoId,
                         principalTable: "Orcamento",
                         principalColumn: "Id",
@@ -173,13 +239,23 @@ namespace Atm.Atendimento.Dados.Migrations
                 column: "ClienteId");
 
             migrationBuilder.CreateIndex(
+                name: "IX_Orcamento_PagamentoId",
+                table: "Orcamento",
+                column: "PagamentoId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Pagamento_ModoPagamentoId",
+                table: "Pagamento",
+                column: "ModoPagamentoId");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_Peca_OrcamentoId",
                 table: "Peca",
                 column: "OrcamentoId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Produto_OrcamentoId",
-                table: "Produto",
+                name: "IX_ProdutoOrcamento_OrcamentoId",
+                table: "ProdutoOrcamento",
                 column: "OrcamentoId");
         }
 
@@ -192,7 +268,7 @@ namespace Atm.Atendimento.Dados.Migrations
                 name: "Peca");
 
             migrationBuilder.DropTable(
-                name: "Produto");
+                name: "ProdutoOrcamento");
 
             migrationBuilder.DropTable(
                 name: "Servico");
@@ -201,10 +277,16 @@ namespace Atm.Atendimento.Dados.Migrations
                 name: "Orcamento");
 
             migrationBuilder.DropTable(
-                name: "Carro");
+                name: "CarroOrcamento");
 
             migrationBuilder.DropTable(
-                name: "Cliente");
+                name: "ClienteOrcamento");
+
+            migrationBuilder.DropTable(
+                name: "Pagamento");
+
+            migrationBuilder.DropTable(
+                name: "ModoPagamento");
         }
     }
 }
