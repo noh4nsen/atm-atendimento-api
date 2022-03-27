@@ -10,6 +10,7 @@ namespace Atm.Atendimento.Api.Extensions.Entities
             return new ClienteOrcamento()
             {
                 Id = Guid.NewGuid(),
+                Ativo = true,
                 IdExterno = entity.IdExterno,
                 DataCadastro = DateTime.Now
             };
