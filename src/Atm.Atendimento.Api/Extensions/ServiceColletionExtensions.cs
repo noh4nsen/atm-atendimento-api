@@ -1,4 +1,6 @@
-﻿using Atm.Atendimento.Api.Validation;
+﻿using Atm.Atendimento.Api.Services;
+using Atm.Atendimento.Api.Validation;
+using Atm.Atendimento.Services;
 using FluentValidation;
 using MediatR;
 using MicroElements.Swashbuckle.FluentValidation.AspNetCore;
@@ -17,6 +19,12 @@ namespace Atm.Atendimento.Api.Extensions
     [ExcludeFromCodeCoverage]
     public static class ServiceColletionExtensions
     {
+        public static void SetupServices(this IServiceCollection services)
+        {
+            services.AddScoped(typeof(IClienteService), typeof(ClienteService));
+            services.AddScoped(typeof(IProdutoService), typeof(ProdutoService));
+        }
+
         public static void SetupFluentValidation(this IServiceCollection services, Assembly assembly)
         {
             services.AddTransient<IValidatorFactory, FluentValidationFactory>();

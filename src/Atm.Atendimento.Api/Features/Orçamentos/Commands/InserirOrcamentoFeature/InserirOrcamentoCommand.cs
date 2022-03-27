@@ -1,0 +1,201 @@
+﻿using Atm.Atendimento.Domain;
+using Atm.Atendimento.Dto;
+using FluentValidation;
+using MediatR;
+using System;
+using System.Collections.Generic;
+using System.Threading;
+using System.Threading.Tasks;
+
+namespace Atm.Atendimento.Api.Features.Orçamentos.Commands.InserirOrcamentoFeature
+{
+    public class InserirOrcamentoCommand : IRequest<InserirOrcamentoCommandResponse>
+    {
+        public Guid ClienteId { get; set; }
+        public Guid CarroId { get; set; }
+        public string Descricao { get; set; }
+        public ICollection<InserirProdutoCommand> Produtos { get; set; }
+        public ICollection<InserirPecaCommand> Pecas { get; set; }
+        public ICollection<InserirCustoServicoCommand> Servicos { get; set; }
+        public InserirPagamentoCommand Pagamento { get; set; }
+    }
+
+    public class InserirProdutoCommand
+    {
+        public Guid ProdutoId { get; set; }
+        public int Quantidade { get; set; }
+        public decimal Percentual { get; set; }
+        public decimal ValorTotal { get; set; }
+    }
+
+    public class InserirPecaCommand
+    {
+        public string Nome { get; set; }
+        public string Descricao { get; set; }
+        public decimal ValorUnitario { get; set; }
+        public decimal ValorCobrado { get; set; }
+    }
+
+    public class InserirCustoServicoCommand
+    {
+        public Guid ServicoId { get; set; }
+        public decimal Valor { get; set; }
+        public string Descricao { get; set; }
+    }
+
+    public class InserirPagamentoCommand
+    {
+        public decimal? Percentual { get; set; }
+        public decimal? Desconto { get; set; }
+        public decimal ValorFinal { get; set; }
+        public bool PagamentoEfetuado { get; set; }
+        public InserirModoPagamentoCommand ModoPagamento { get; set; }
+    }
+
+    public class InserirModoPagamentoCommand
+    {
+        public bool CartaoCredito { get; set; }
+        public bool CartaoDebito { get; set; }
+        public bool Dinheiro { get; set; }
+        public bool Pix { get; set; }
+    }
+
+    public class InserirOrcamentoCommandValidator : AbstractValidator<InserirOrcamentoCommand>
+    {
+        public InserirOrcamentoCommandValidator()
+        {
+            RuleFor(r => r.ClienteId)
+                .NotEqual(Guid.Empty)
+                .WithMessage("Id de cliente é obrigatório.");
+
+            RuleFor(r => r.CarroId)
+                .NotEqual(Guid.Empty)
+                .WithMessage("Id de carro é obrigatório.");
+
+            RuleForEach(r => r.Produtos)
+                .ChildRules(produto =>
+                {
+                    produto.RuleFor(p => p.ProdutoId)
+                           .NotEqual(Guid.Empty)
+                           .WithMessage("Id de produto é obrigatório");
+                    produto.RuleFor(p => p.Quantidade)
+                           .NotNull()
+                           .WithMessage("Quantidade de produto é obrigatório.")
+                           .GreaterThan(0)
+                           .WithMessage("Quantidade de produto deve ser maior que zero.");
+                    produto.RuleFor(p => p.Percentual)
+                           .NotNull()
+                           .WithMessage("Percentual de produto é obrigatório.");
+                    produto.RuleFor(p => p.ValorTotal)
+                           .NotNull()
+                           .WithMessage("Valor total de produto é obrigatório.");
+                });
+
+            RuleForEach(r => r.Pecas)
+                .ChildRules(peca =>
+                {
+                    peca.RuleFor(p => p.Nome)
+                        .NotEmpty()
+                        .WithMessage("Nome de peça é obrigatório.");
+                    peca.RuleFor(p => p.ValorUnitario)
+                        .NotNull()
+                        .WithMessage("Valor unitário de peça é obrigatório.");
+                    peca.RuleFor(p => p.ValorCobrado)
+                        .NotNull()
+                        .WithMessage("Valor cobrado de peça é obrigatório.");
+                });
+
+            RuleForEach(r => r.Servicos)
+                .ChildRules(servico =>
+                {
+                    servico.RuleFor(r => r.ServicoId)
+                           .NotEqual(Guid.Empty)
+                           .WithMessage("Id de serviço é obrigatório.");
+                    servico.RuleFor(r => r.Valor)
+                           .NotNull()
+                           .WithMessage("Valor cobrado de serviço é obrigatório.");
+                });
+
+            RuleFor(r => r.Pagamento)
+                .NotNull()
+                .WithMessage("Pagamento é obrigatório.")
+                .ChildRules(pagamento =>
+                {
+                    pagamento.RuleFor(p => p.ValorFinal)
+                             .NotNull()
+                             .WithMessage("Valor final de Pagamento é obrigatório.");
+                    pagamento.RuleFor(p => p.PagamentoEfetuado)
+                             .NotNull()
+                             .WithMessage("Estado de pagamento efetuado é obrigatório.");
+                    pagamento.RuleFor(p => p.ModoPagamento)
+                             .ChildRules(modoPagamento =>
+                             {
+                                 modoPagamento.RuleFor(mp => mp.CartaoCredito)
+                                              .NotNull()
+                                              .WithMessage("Modo de pagamento é obrigatório.");
+                                 modoPagamento.RuleFor(mp => mp.CartaoDebito)
+                                              .NotNull()
+                                              .WithMessage("Modo de pagamento é obrigatório.");
+                                 modoPagamento.RuleFor(mp => mp.Dinheiro)
+                                              .NotNull()
+                                              .WithMessage("Modo de pagamento é obrigatório.");
+                                 modoPagamento.RuleFor(mp => mp.Pix)
+                                              .NotNull()
+                                              .WithMessage("Modo de pagamento é obrigatório.");
+                             });
+                });
+        }
+
+        public async Task ValidateDataAsync
+            (
+                InserirOrcamentoCommand request,
+                ClienteOrcamento entity,
+                CancellationToken cancellationToken
+            )
+        {
+            RuleFor(r => r.ClienteId)
+                .Must(m => { return entity is not null; })
+                .WithMessage("Cliente inválido.");
+            await this.ValidateAndThrowAsync(request, cancellationToken);
+        }
+
+        public async Task ValidateDataAsync
+            (
+                InserirOrcamentoCommand request,
+                CarroOrcamento entity,
+                CancellationToken cancellationToken
+            )
+        {
+            RuleFor(r => r.ClienteId)
+                .Must(m => { return entity is not null; })
+                .WithMessage("Carro inválido.");
+            await this.ValidateAndThrowAsync(request, cancellationToken);
+        }
+
+        public async Task ValidateDataAsync
+            (
+                InserirOrcamentoCommand request,
+                ProdutoOrcamento entity,
+                CancellationToken cancellationToken
+            )
+        {
+            RuleFor(r => r.ClienteId)
+                .Must(m => { return entity is not null; })
+                .WithMessage("Produto inválido.");
+            await this.ValidateAndThrowAsync(request, cancellationToken);
+        }
+
+        public async Task ValidateDataAsync
+            (
+                InserirOrcamentoCommand request,
+                Servico entity,
+                CancellationToken cancellationToken
+            )
+        {
+            RuleFor(r => r.ClienteId)
+                .Must(m => { return entity is not null; })
+                .WithMessage("Serviço inválido.");
+            await this.ValidateAndThrowAsync(request, cancellationToken);
+        }
+    }
+}

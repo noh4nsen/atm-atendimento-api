@@ -33,6 +33,12 @@ namespace Atm.Atendimento.Api.Extensions.Entities
             entity.Ativo = true;
         }
 
+        public static void Update(this CustoServico request, Servico entity)
+        {
+            entity.ValorAtual = request.Valor;
+            entity.CustoServicoAtual = request.Id;
+        }
+
         public static AtualizarServicoCommandResponse ToUpdateResponse(this Servico entity)
         {
             return new AtualizarServicoCommandResponse()
