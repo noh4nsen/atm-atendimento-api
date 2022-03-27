@@ -11,6 +11,7 @@ namespace Atm.Atendimento.Api.Extensions.Entities
             return new ProdutoOrcamento()
             {
                 Id = Guid.NewGuid(),
+                Ativo = true,
                 IdExterno = entity.IdExterno,
                 Quantidade = request.Quantidade,
                 Percentual = request.Percentual,
