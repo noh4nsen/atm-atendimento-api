@@ -70,14 +70,14 @@ namespace Atm.Atendimento.Api.Features.Orçamentos.Commands.InserirOrcamentoFeat
         {
             ClienteOrcamento entity = await _clienteService.GetClienteById(request.ClienteId);
             await _validator.ValidateDataAsync(request, entity, cancellationToken);
-            return entity;
+            return entity.ToNew();
         }
 
         private async Task<CarroOrcamento> GetCarroOrcamentoAsync(InserirOrcamentoCommand request, CancellationToken cancellationToken)
         {
             CarroOrcamento entity = await _clienteService.GetCarroById(request.CarroId);
             await _validator.ValidateDataAsync(request, entity, cancellationToken);
-            return entity;
+            return entity.ToNew();
         }
 
         private async Task<IEnumerable<ProdutoOrcamento>> GetProdutoOrcamentosAsync(InserirOrcamentoCommand request, CancellationToken cancellationToken)
@@ -88,7 +88,8 @@ namespace Atm.Atendimento.Api.Features.Orçamentos.Commands.InserirOrcamentoFeat
             IList<ProdutoOrcamento> produtos = new List<ProdutoOrcamento>();
             foreach (var entity in request.Produtos)
             {
-                produtos.Add(await GetProdutoOrcamentoAsync(request, entity.ProdutoId, cancellationToken));
+                ProdutoOrcamento produto = await GetProdutoOrcamentoAsync(request, entity.ProdutoId, cancellationToken);
+                produtos.Add(entity.ToDomain(produto));
             }
             return produtos;
         }
@@ -121,7 +122,10 @@ namespace Atm.Atendimento.Api.Features.Orçamentos.Commands.InserirOrcamentoFeat
             IList<CustoServico> servicos = new List<CustoServico>();
             foreach (var entity in request.Servicos)
             {
-                servicos.Add(entity.ToDomain(await GetServicoAsync(request, entity.ServicoId, cancellationToken)));
+                Servico servico = await GetServicoAsync(request, entity.ServicoId, cancellationToken);
+                CustoServico custoServico = entity.ToDomain(servico);
+                custoServico.Update(servico);
+                servicos.Add(custoServico);
             }
             return servicos;
         }

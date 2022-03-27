@@ -19,19 +19,43 @@ namespace Atm.Atendimento.Api.Services
         public async Task<CarroOrcamento> GetCarroById(Guid id)
         {
             RestClient client = new RestClient(_configuration.GetValue<string>("api:cliente"));
-            RestRequest request = new RestRequest("carro/{id}", Method.Get);
-            request.AddParameter("id", id);
-            RestResponse<CarroOrcamento> result = await client.ExecuteAsync<CarroOrcamento>(request);
-            return result.Data;
+            RestRequest request = new RestRequest("carro/{id}", Method.Get).AddUrlSegment("id", id);
+            RestResponse<CarroDto> result = await client.ExecuteAsync<CarroDto>(request);
+
+            CarroDto carroDto = result.Data;
+            CarroOrcamento carro = new CarroOrcamento();
+
+            if (carroDto.Id.Equals(Guid.Empty))
+                return null;
+
+            carro.IdExterno = carroDto.Id;
+            return carro;
         }
 
         public async Task<ClienteOrcamento> GetClienteById(Guid id)
         {
             RestClient client = new RestClient(_configuration.GetValue<string>("api:cliente"));
-            RestRequest request = new RestRequest("cliente/{id}", Method.Get);
-            request.AddParameter("id", id);
-            RestResponse<ClienteOrcamento> result = await client.ExecuteAsync<ClienteOrcamento>(request);
-            return result.Data;
+            RestRequest request = new RestRequest("cliente/{id}", Method.Get).AddUrlSegment("id", id);
+            RestResponse<ClienteDto> result = await client.ExecuteAsync<ClienteDto>(request);
+
+            ClienteDto clienteDto = result.Data;
+            ClienteOrcamento cliente = new ClienteOrcamento();
+
+            if (clienteDto.Id.Equals(Guid.Empty))
+                return null;
+
+            cliente.IdExterno = clienteDto.Id;
+            return cliente;
+        }
+
+        private class CarroDto
+        {
+            public Guid Id { get; set; }
+        }
+
+        private class ClienteDto
+        {
+            public Guid Id { get; set; }
         }
     }
 }
