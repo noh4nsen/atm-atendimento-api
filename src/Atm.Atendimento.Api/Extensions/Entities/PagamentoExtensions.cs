@@ -1,4 +1,5 @@
 ﻿using Atm.Atendimento.Api.Features.Orçamentos.Commands.InserirOrcamentoFeature;
+using Atm.Atendimento.Api.Features.Orçamentos.Queries.SelecionarOrcamentoByIdFeature;
 using Atm.Atendimento.Domain;
 using System;
 
@@ -33,6 +34,31 @@ namespace Atm.Atendimento.Api.Extensions.Entities
                 Pix = request.Pix,
                 DataCadastro = DateTime.Now
             };
-    }
+        }
+
+        public static SelecionarPagamentoQueryResponse ToQueryResponse(this Pagamento entity)
+        {
+            return new SelecionarPagamentoQueryResponse()
+            {
+                Id = entity.Id,
+                Percentual = entity.Percentual,
+                Desconto = entity.Desconto,
+                ValorFinal = entity.ValorFinal,
+                PagamentoEfetuado = entity.PagamentoEfetuado,
+                ModoPagamento = entity.ModoPagamento.ToQueryResponse()
+            };
+        }
+
+        public static SelecionarModoPagamentoQueryResponse ToQueryResponse(this ModoPagamento entity)
+        {
+            return new SelecionarModoPagamentoQueryResponse()
+            {
+                Id = entity.Id,
+                CartaoCredito = entity.CartaoCredito,
+                CartaoDebito = entity.CartaoDebito,
+                Dinheiro = entity.Dinheiro,
+                Pix = entity.Pix
+            };
+        }
     }
 }

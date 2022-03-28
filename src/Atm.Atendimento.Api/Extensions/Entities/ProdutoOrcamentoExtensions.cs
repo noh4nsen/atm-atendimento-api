@@ -1,6 +1,9 @@
 ﻿using Atm.Atendimento.Api.Features.Orçamentos.Commands.InserirOrcamentoFeature;
+using Atm.Atendimento.Api.Features.Orçamentos.Queries.SelecionarOrcamentoByIdFeature;
 using Atm.Atendimento.Dto;
 using System;
+using System.Collections.Generic;
+using System.Linq;
 
 namespace Atm.Atendimento.Api.Extensions.Entities
 {
@@ -17,6 +20,29 @@ namespace Atm.Atendimento.Api.Extensions.Entities
                 Percentual = request.Percentual,
                 ValorTotal = request.ValorTotal,
                 DataCadastro = DateTime.Now
+            };
+        }
+
+        public static IEnumerable<SelecionarProdutoQueryResponse> ToQueryResponse(this ICollection<ProdutoOrcamento> list)
+        {
+            if (list.Count == 0 && !list.Any())
+                return new List<SelecionarProdutoQueryResponse>();
+
+            IList<SelecionarProdutoQueryResponse> produtos = new List<SelecionarProdutoQueryResponse>();
+            foreach(var entity in list)
+                produtos.Add(entity.ToQueryResponse());
+            return produtos;
+        }
+
+        public static SelecionarProdutoQueryResponse ToQueryResponse(this ProdutoOrcamento entity)
+        {
+            return new SelecionarProdutoQueryResponse()
+            {
+                Id = entity.Id,
+                ProdutoId = entity.IdExterno,
+                Quantidade = entity.Quantidade,
+                Percentual= entity.Percentual,
+                ValorTotal= entity.ValorTotal
             };
         }
     }

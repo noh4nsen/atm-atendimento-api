@@ -1,4 +1,5 @@
 ﻿using Atm.Atendimento.Api.Features.Orçamentos.Commands.InserirOrcamentoFeature;
+using Atm.Atendimento.Api.Features.Orçamentos.Queries.SelecionarOrcamentoByIdFeature;
 using Atm.Atendimento.Domain;
 using Atm.Atendimento.Domain.Enum;
 using Atm.Atendimento.Dto;
@@ -40,6 +41,25 @@ namespace Atm.Atendimento.Api.Extensions.Entities
             {
                 Id = entity.Id,
                 Datacadastro = entity.DataCadastro
+            };
+        }
+
+        public static SelecionarOrcamentoByIdQueryResponse ToQueryResponse(this Orcamento entity)
+        {
+            return new SelecionarOrcamentoByIdQueryResponse()
+            {
+                Id = entity.Id,
+                ClienteId = entity.Cliente.IdExterno,
+                CarroId = entity.Carro.IdExterno,
+                Descricao = entity.Descricao,
+                ProdutoOrcamentos = entity.Produtos.ToQueryResponse().ToList(),
+                Pecas = entity.Pecas.ToQueryResponse().ToList(),
+                CustoServicos = entity.CustoServicos.ToQueryResponse().ToList(),
+                Pagamento = entity.Pagamento.ToQueryResponse(),
+                DataAgendamento = entity.DataAgendamento,
+                DataHoraInicio = entity.DataHoraInicio,
+                DataHoraFim = entity.DataHoraFim,
+                Duracao = entity.Duracao               
             };
         }
     }
