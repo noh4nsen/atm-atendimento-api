@@ -1,6 +1,9 @@
 ﻿using Atm.Atendimento.Api.Features.Orçamentos.Commands.InserirOrcamentoFeature;
+using Atm.Atendimento.Api.Features.Orçamentos.Queries.SelecionarOrcamentoByIdFeature;
 using Atm.Atendimento.Domain;
 using System;
+using System.Collections.Generic;
+using System.Linq;
 
 namespace Atm.Atendimento.Api.Extensions.Entities
 {
@@ -16,6 +19,28 @@ namespace Atm.Atendimento.Api.Extensions.Entities
                 Valor = request.Valor,
                 Descricao = request.Descricao,
                 DataCadastro = DateTime.Now
+            };
+        }
+
+        public static IEnumerable<SelecionarCustoServicoQueryResponse> ToQueryResponse(this ICollection<CustoServico> list)
+        {
+            if (list.Count == 0 && !list.Any())
+                return new List<SelecionarCustoServicoQueryResponse>();
+
+            List<SelecionarCustoServicoQueryResponse> custoServicos = new List<SelecionarCustoServicoQueryResponse>();
+            foreach (var entity in list)
+                custoServicos.Add(entity.ToQueryResponse());
+            return custoServicos;
+        }
+
+        public static SelecionarCustoServicoQueryResponse ToQueryResponse(this CustoServico entity)
+        {
+            return new SelecionarCustoServicoQueryResponse()
+            {
+                Id = entity.Id,
+                Servico = entity.Servico.ToCustoServicoQueryResponse(),
+                Descricao = entity.Descricao,
+                Valor = entity.Valor
             };
         }
     }

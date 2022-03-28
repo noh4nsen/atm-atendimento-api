@@ -1,4 +1,5 @@
-﻿using Atm.Atendimento.Api.Features.Servicos.Commands;
+﻿using Atm.Atendimento.Api.Features.Orçamentos.Queries.SelecionarOrcamentoByIdFeature;
+using Atm.Atendimento.Api.Features.Servicos.Commands;
 using Atm.Atendimento.Api.Features.Servicos.Queries;
 using Atm.Atendimento.Domain;
 using System.Collections.Generic;
@@ -72,6 +73,15 @@ namespace Atm.Atendimento.Api.Extensions.Entities
             foreach (Servico entity in list)
                 response.Add(entity.ToQueryResponse());
             return response;
+        }
+
+        public static SelecionarServicoQueryResponse ToCustoServicoQueryResponse(this Servico entity)
+        {
+            return new SelecionarServicoQueryResponse()
+            {
+                Id = entity.Id,
+                Nome = entity.Nome
+            };
         }
     }
 }

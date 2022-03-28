@@ -1,4 +1,5 @@
 ﻿using Atm.Atendimento.Api.Features.Orçamentos.Commands.InserirOrcamentoFeature;
+using Atm.Atendimento.Api.Features.Orçamentos.Queries.SelecionarOrcamentoByIdFeature;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using System;
@@ -21,6 +22,12 @@ namespace Atm.Atendimento.Api.Features.Orçamentos
         public async Task<ActionResult> Post([FromBody] InserirOrcamentoCommand request)
         {
             return Ok(await _mediator.Send(request));
+        }
+
+        [HttpGet("{id}")]
+        public async Task<ActionResult> Get(Guid id)
+        {
+            return Ok(await _mediator.Send(new SelecionarOrcamentoByIdQuery { Id = id }));
         }
     }
 }
