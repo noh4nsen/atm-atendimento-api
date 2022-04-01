@@ -13,6 +13,7 @@ namespace Atm.Atendimento.Api.Features.Orçamentos.Queries.SelecionarOrcamentoBy
         public ICollection<SelecionarPecaQueryResponse> Pecas { get; set; }
         public ICollection<SelecionarCustoServicoQueryResponse> CustoServicos { get; set; }
         public SelecionarPagamentoQueryResponse Pagamento { get; set; }
+        public DateTime DataCadastro { get; set; }
         public DateTime? DataAgendamento { get; set; }
         public DateTime? DataHoraInicio { get; set; }
         public DateTime? DataHoraFim { get; set; }

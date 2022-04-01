@@ -1,5 +1,6 @@
 ﻿using Atm.Atendimento.Api.Features.Orçamentos.Commands.InserirOrcamentoFeature;
 using Atm.Atendimento.Api.Features.Orçamentos.Queries.SelecionarOrcamentoByIdFeature;
+using Atm.Atendimento.Api.Helpers;
 using Atm.Atendimento.Domain;
 using System;
 
@@ -18,7 +19,7 @@ namespace Atm.Atendimento.Api.Extensions.Entities
                 ValorFinal = request.ValorFinal,
                 PagamentoEfetuado = request.PagamentoEfetuado,
                 ModoPagamento = request.ModoPagamento.ToDomain(),
-                DataCadastro = DateTime.Now
+                DataCadastro = DateHelper.GetLocalTime()
             };
         }
 
@@ -32,7 +33,7 @@ namespace Atm.Atendimento.Api.Extensions.Entities
                 CartaoDebito = request.CartaoDebito,
                 Dinheiro = request.Dinheiro,
                 Pix = request.Pix,
-                DataCadastro = DateTime.Now
+                DataCadastro = DateHelper.GetLocalTime()
             };
         }
 
