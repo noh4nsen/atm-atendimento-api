@@ -1,8 +1,13 @@
-﻿using Atm.Atendimento.Api.Features.Orçamentos.Commands.InserirOrcamentoFeature;
+﻿using Atm.Atendimento.Api.Features.Orçamentos.Commands.AgendamentoFeature;
+using Atm.Atendimento.Api.Features.Orçamentos.Commands.AtendimentoFeature;
+using Atm.Atendimento.Api.Features.Orçamentos.Commands.InserirOrcamentoFeature;
+using Atm.Atendimento.Api.Features.Orçamentos.Commands.RemoverOrcamentoFeature;
 using Atm.Atendimento.Api.Features.Orçamentos.Queries.SelecionarOrcamentoByIdFeature;
+using Atm.Atendimento.Api.Helpers;
 using Atm.Atendimento.Domain;
 using Atm.Atendimento.Domain.Enum;
 using Atm.Atendimento.Dto;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -33,6 +38,20 @@ namespace Atm.Atendimento.Api.Extensions.Entities
                 Pagamento = pagamento,
                 Status = StatusEnum.Cadastrado
             };
+        }
+
+        public static void ToAgendamento(this AgendarAtendimentoCommand request, Orcamento entity)
+        {
+            entity.DataAgendamento = request.DataAgendamento;
+            entity.DataHoraInicio = request.DataAgendamento;
+            entity.Status = StatusEnum.Agendado;
+        }
+
+        public static void ToFinalizarAtendimento(this Orcamento entity)
+        {
+            entity.DataHoraFim = DateHelper.GetLocalTime();
+            entity.Duracao = ((DateTime)entity.DataHoraFim - (DateTime)entity.DataHoraInicio).TotalHours;
+            entity.Status = StatusEnum.Finalizado;
         }
 
         public static InserirOrcamentoCommandResponse ToInsertResponse(this Orcamento entity)
@@ -73,6 +92,30 @@ namespace Atm.Atendimento.Api.Extensions.Entities
             foreach (Orcamento entity in list)
                 response.Add(entity.ToQueryResponse());
             return response;
+        }
+
+        public static RemoverOrcamentoCommandResponse ToRemoveResponse(this Orcamento entity)
+        {
+            return new RemoverOrcamentoCommandResponse() { Id = entity.Id };
+        }
+
+        public static AgendarAtendimentoCommandResponse ToAgendarResponse(this Orcamento entity)
+        {
+            return new AgendarAtendimentoCommandResponse()
+            {
+                Id = entity.Id,
+                DataAgendamento = entity.DataAgendamento
+            };
+        }
+
+        public static FinalizarAtendimentoCommandResponse ToFinalizarAtendimentoResponse(this Orcamento entity)
+        {
+            return new FinalizarAtendimentoCommandResponse()
+            {
+                Id = entity.Id,
+                DataHoraFim = entity.DataHoraFim,
+                Duracao = entity.Duracao
+            };
         }
     }
 }
