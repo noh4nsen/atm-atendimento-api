@@ -56,11 +56,23 @@ namespace Atm.Atendimento.Api.Extensions.Entities
                 Pecas = entity.Pecas.ToQueryResponse().ToList(),
                 CustoServicos = entity.CustoServicos.ToQueryResponse().ToList(),
                 Pagamento = entity.Pagamento.ToQueryResponse(),
+                DataCadastro = entity.DataCadastro,
                 DataAgendamento = entity.DataAgendamento,
                 DataHoraInicio = entity.DataHoraInicio,
                 DataHoraFim = entity.DataHoraFim,
                 Duracao = entity.Duracao               
             };
+        }
+
+        public static IEnumerable<SelecionarOrcamentoByIdQueryResponse> ToFiltersQueryResponse(this IEnumerable<Orcamento> list)
+        {
+            if (list.Count() == 0 && !list.Any())
+                return new List<SelecionarOrcamentoByIdQueryResponse>();
+
+            IList<SelecionarOrcamentoByIdQueryResponse> response = new List<SelecionarOrcamentoByIdQueryResponse>();
+            foreach (Orcamento entity in list)
+                response.Add(entity.ToQueryResponse());
+            return response;
         }
     }
 }

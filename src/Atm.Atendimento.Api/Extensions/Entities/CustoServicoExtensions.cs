@@ -1,5 +1,6 @@
 ﻿using Atm.Atendimento.Api.Features.Orçamentos.Commands.InserirOrcamentoFeature;
 using Atm.Atendimento.Api.Features.Orçamentos.Queries.SelecionarOrcamentoByIdFeature;
+using Atm.Atendimento.Api.Helpers;
 using Atm.Atendimento.Domain;
 using System;
 using System.Collections.Generic;
@@ -18,7 +19,7 @@ namespace Atm.Atendimento.Api.Extensions.Entities
                 Servico = servico,
                 Valor = request.Valor,
                 Descricao = request.Descricao,
-                DataCadastro = DateTime.Now
+                DataCadastro = DateHelper.GetLocalTime()
             };
         }
 

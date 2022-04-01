@@ -56,6 +56,7 @@ namespace Atm.Atendimento.Api.Features.Orçamentos.Queries.SelecionarOrcamentoBy
                                                                o => o.Cliente,
                                                                o => o.Carro,
                                                                o => o.Produtos,
+                                                               o => o.CustoServicos,
                                                                o => o.Pagamento,
                                                                o => o.Pecas);
             await _validator.ValidateDataAsync(request, entity, cancellationToken);
@@ -66,14 +67,14 @@ namespace Atm.Atendimento.Api.Features.Orçamentos.Queries.SelecionarOrcamentoBy
         {
             IEnumerable<CustoServico> custoServicos = await _repositoryCustoServico.GetAsync(cs => cs.Orcamento.Id.Equals(entity.Id), cs => cs.Servico);
             foreach (var custoServico in custoServicos)
-                await _validator.ValidateDataAsync(request, entity, cancellationToken);
+                await _validator.ValidateDataAsync(request, custoServico, cancellationToken);
             return custoServicos;
         }
 
         private async Task<Pagamento> GetPagamentoAsync(SelecionarOrcamentoByIdQuery request, Orcamento entity, CancellationToken cancellationToken)
         {
             Pagamento pagamento = await _repositoryPagamento.GetFirstAsync(p => p.Id.Equals(entity.Pagamento.Id), p => p.ModoPagamento);
-            await _validator.ValidateDataAsync(request, entity, cancellationToken);
+            await _validator.ValidateDataAsync(request, pagamento, cancellationToken);
             return pagamento;
         }
     }

@@ -35,9 +35,5 @@
     <ProjectReference Include="..\Atm.Atendimento.Dados\Atm.Atendimento.Dados.csproj" />
     <ProjectReference Include="..\Atm.Atendimento\Atm.Atendimento.csproj" />
   </ItemGroup>
-
-  <ItemGroup>
-    <Folder Include="Features\Orçamentos\Queries\SelecionarOrcamentoFilters\" />
-  </ItemGroup>
   
 </Project>

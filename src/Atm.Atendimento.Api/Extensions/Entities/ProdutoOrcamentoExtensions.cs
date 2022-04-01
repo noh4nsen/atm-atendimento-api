@@ -1,5 +1,6 @@
 ﻿using Atm.Atendimento.Api.Features.Orçamentos.Commands.InserirOrcamentoFeature;
 using Atm.Atendimento.Api.Features.Orçamentos.Queries.SelecionarOrcamentoByIdFeature;
+using Atm.Atendimento.Api.Helpers;
 using Atm.Atendimento.Dto;
 using System;
 using System.Collections.Generic;
@@ -19,7 +20,7 @@ namespace Atm.Atendimento.Api.Extensions.Entities
                 Quantidade = request.Quantidade,
                 Percentual = request.Percentual,
                 ValorTotal = request.ValorTotal,
-                DataCadastro = DateTime.Now
+                DataCadastro = DateHelper.GetLocalTime()
             };
         }
 

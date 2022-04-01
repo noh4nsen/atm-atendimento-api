@@ -1,4 +1,5 @@
-﻿using Atm.Atendimento.Dto;
+﻿using Atm.Atendimento.Api.Helpers;
+using Atm.Atendimento.Dto;
 using System;
 
 namespace Atm.Atendimento.Api.Extensions.Entities
@@ -12,7 +13,7 @@ namespace Atm.Atendimento.Api.Extensions.Entities
                 Id = Guid.NewGuid(),
                 Ativo = true,
                 IdExterno = entity.IdExterno,
-                DataCadastro = DateTime.Now
+                DataCadastro = DateHelper.GetLocalTime()
             };
         }
     }
