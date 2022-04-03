@@ -24,6 +24,7 @@ namespace Atm.Atendimento.Api.Features.Orçamentos.Queries.SelecionarOrcamentoBy
     {
         public Guid Id { get; set; }
         public Guid ProdutoId { get; set; }
+        public decimal ValorUnitario { get; set; }  
         public int Quantidade { get; set; }
         public decimal Percentual { get; set; }
         public decimal ValorTotal { get; set; }

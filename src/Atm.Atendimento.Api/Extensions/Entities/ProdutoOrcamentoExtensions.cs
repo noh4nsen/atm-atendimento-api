@@ -18,6 +18,7 @@ namespace Atm.Atendimento.Api.Extensions.Entities
                 Ativo = true,
                 IdExterno = entity.IdExterno,
                 Quantidade = request.Quantidade,
+                ValorUnitario = request.ValorUnitario,
                 Percentual = request.Percentual,
                 ValorTotal = request.ValorTotal,
                 DataCadastro = DateHelper.GetLocalTime()
@@ -41,6 +42,7 @@ namespace Atm.Atendimento.Api.Extensions.Entities
             {
                 Id = entity.Id,
                 ProdutoId = entity.IdExterno,
+                ValorUnitario = entity.ValorUnitario,
                 Quantidade = entity.Quantidade,
                 Percentual= entity.Percentual,
                 ValorTotal= entity.ValorTotal

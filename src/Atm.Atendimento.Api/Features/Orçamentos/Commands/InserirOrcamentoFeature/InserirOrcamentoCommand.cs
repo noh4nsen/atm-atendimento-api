@@ -24,6 +24,7 @@ namespace Atm.Atendimento.Api.Features.Orçamentos.Commands.InserirOrcamentoFeat
     {
         public Guid ProdutoId { get; set; }
         public int Quantidade { get; set; }
+        public decimal ValorUnitario { get; set; }
         public decimal Percentual { get; set; }
         public decimal ValorTotal { get; set; }
     }
@@ -83,6 +84,11 @@ namespace Atm.Atendimento.Api.Features.Orçamentos.Commands.InserirOrcamentoFeat
                            .WithMessage("Quantidade de produto é obrigatório.")
                            .GreaterThan(0)
                            .WithMessage("Quantidade de produto deve ser maior que zero.");
+                    produto.RuleFor(p => p.ValorUnitario)
+                           .NotNull()
+                           .WithMessage("Valor unitário de produto é obrigatório.")
+                           .GreaterThan(0)
+                           .WithMessage("Valor unitário de produto deve ser maior que zero.");
                     produto.RuleFor(p => p.Percentual)
                            .NotNull()
                            .WithMessage("Percentual de produto é obrigatório.");
