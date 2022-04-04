@@ -74,14 +74,5 @@ namespace Atm.Atendimento.Api.Extensions.Entities
                 response.Add(entity.ToQueryResponse());
             return response;
         }
-
-        public static SelecionarServicoQueryResponse ToCustoServicoQueryResponse(this Servico entity)
-        {
-            return new SelecionarServicoQueryResponse()
-            {
-                Id = entity.Id,
-                Nome = entity.Nome
-            };
-        }
     }
 }

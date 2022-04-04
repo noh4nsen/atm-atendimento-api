@@ -42,15 +42,9 @@ namespace Atm.Atendimento.Api.Features.Orçamentos.Queries.SelecionarOrcamentoBy
     public class SelecionarCustoServicoQueryResponse
     {
         public Guid Id { get; set; }
-        public SelecionarServicoQueryResponse Servico { get; set; }
+        public Guid ServicoId { get; set; }
         public string Descricao { get; set; }
         public decimal Valor { get; set; }
-    }
-
-    public class SelecionarServicoQueryResponse
-    {
-        public Guid Id { get; set; }
-        public string Nome { get; set; }
     }
 
     public class SelecionarPagamentoQueryResponse

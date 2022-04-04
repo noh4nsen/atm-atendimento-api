@@ -39,7 +39,7 @@ namespace Atm.Atendimento.Api.Extensions.Entities
             return new SelecionarCustoServicoQueryResponse()
             {
                 Id = entity.Id,
-                Servico = entity.Servico.ToCustoServicoQueryResponse(),
+                ServicoId = entity.Servico.Id,
                 Descricao = entity.Descricao,
                 Valor = entity.Valor
             };
