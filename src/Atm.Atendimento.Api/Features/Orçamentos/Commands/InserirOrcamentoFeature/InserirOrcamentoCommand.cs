@@ -161,7 +161,7 @@ namespace Atm.Atendimento.Api.Features.Orçamentos.Commands.InserirOrcamentoFeat
         {
             RuleFor(r => r.ClienteId)
                 .Must(m => { return entity is not null; })
-                .WithMessage("Cliente inválido.");
+                .WithMessage("Cliente inválido ou serviço de clientes indisponível.");
             await this.ValidateAndThrowAsync(request, cancellationToken);
         }
 
@@ -174,7 +174,7 @@ namespace Atm.Atendimento.Api.Features.Orçamentos.Commands.InserirOrcamentoFeat
         {
             RuleFor(r => r.ClienteId)
                 .Must(m => { return entity is not null; })
-                .WithMessage("Carro inválido.");
+                .WithMessage("Carro inválido ou serviço de veículos indisponível.");
             await this.ValidateAndThrowAsync(request, cancellationToken);
         }
 
@@ -187,7 +187,7 @@ namespace Atm.Atendimento.Api.Features.Orçamentos.Commands.InserirOrcamentoFeat
         {
             RuleFor(r => r.ClienteId)
                 .Must(m => { return entity is not null; })
-                .WithMessage("Produto inválido.");
+                .WithMessage("Produto inválido ou serviço de produtos indisponível.");
             await this.ValidateAndThrowAsync(request, cancellationToken);
         }
 

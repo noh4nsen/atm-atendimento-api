@@ -79,7 +79,8 @@ namespace Atm.Atendimento.Api.Extensions.Entities
                 DataAgendamento = entity.DataAgendamento,
                 DataHoraInicio = entity.DataHoraInicio,
                 DataHoraFim = entity.DataHoraFim,
-                Duracao = entity.Duracao               
+                Duracao = entity.Duracao,
+                ValorFinal = entity.Pagamento.ToQueryResponse().ValorFinal
             };
         }
 
