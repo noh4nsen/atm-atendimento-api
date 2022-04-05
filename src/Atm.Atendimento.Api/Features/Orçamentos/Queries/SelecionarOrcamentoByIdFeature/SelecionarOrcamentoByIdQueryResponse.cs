@@ -9,6 +9,7 @@ namespace Atm.Atendimento.Api.Features.Orçamentos.Queries.SelecionarOrcamentoBy
         public Guid ClienteId { get; set; }
         public Guid CarroId { get; set; }
         public string Descricao { get; set; }
+        public decimal ValorFinal { get; set; }
         public ICollection<SelecionarProdutoQueryResponse> Produtos { get; set; }
         public ICollection<SelecionarPecaQueryResponse> Pecas { get; set; }
         public ICollection<SelecionarCustoServicoQueryResponse> Servicos { get; set; }

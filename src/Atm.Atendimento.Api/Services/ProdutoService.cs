@@ -25,6 +25,8 @@ namespace Atm.Atendimento.Api.Services
             ProdutoDto produtoDto = result.Data;
             ProdutoOrcamento produto = new ProdutoOrcamento();
 
+            if (produtoDto is null)
+                return null;
             if (produtoDto.Id.Equals(Guid.Empty))
                 return null;
 

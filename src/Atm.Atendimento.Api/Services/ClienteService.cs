@@ -25,6 +25,8 @@ namespace Atm.Atendimento.Api.Services
             CarroDto carroDto = result.Data;
             CarroOrcamento carro = new CarroOrcamento();
 
+            if (carroDto is null)
+                return null;
             if (carroDto.Id.Equals(Guid.Empty))
                 return null;
 
@@ -41,6 +43,8 @@ namespace Atm.Atendimento.Api.Services
             ClienteDto clienteDto = result.Data;
             ClienteOrcamento cliente = new ClienteOrcamento();
 
+            if (clienteDto is null)
+                return null;
             if (clienteDto.Id.Equals(Guid.Empty))
                 return null;
 
