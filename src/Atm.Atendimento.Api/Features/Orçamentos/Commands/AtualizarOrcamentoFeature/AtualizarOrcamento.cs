@@ -116,7 +116,10 @@ namespace Atm.Atendimento.Api.Features.Orçamentos.Commands.AtualizarOrcamentoFe
                 Orcamento = orcamento,
                 Nome = peca.Nome,
                 Descricao = peca.Descricao,
-                ValorUnitario = peca.ValorUnitario,
+                ValorUnitarioCompra = peca.ValorUnitarioCompra,
+                ValorUnitarioVenda = peca.ValorUnitarioVenda,
+                Quantidade = peca.Quantidade,
+                Percentual = peca.Percentual,
                 ValorCobrado = peca.ValorCobrado,
                 DataCadastro = DateHelper.GetLocalTime()
             };
@@ -128,7 +131,10 @@ namespace Atm.Atendimento.Api.Features.Orçamentos.Commands.AtualizarOrcamentoFe
 
             entity.Nome = peca.Nome;
             entity.Descricao = peca.Descricao;
-            entity.ValorUnitario = peca.ValorUnitario;
+            entity.ValorUnitarioCompra = peca.ValorUnitarioCompra;
+            entity.ValorUnitarioVenda = peca.ValorUnitarioVenda;
+            entity.Quantidade = peca.Quantidade;
+            entity.Percentual = peca.Percentual;
             entity.ValorCobrado = peca.ValorCobrado;
             entity.DataAtualizacao = DateHelper.GetLocalTime();
 

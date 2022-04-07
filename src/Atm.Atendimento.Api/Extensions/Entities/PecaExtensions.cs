@@ -18,7 +18,10 @@ namespace Atm.Atendimento.Api.Extensions.Entities
                 Ativo = true,
                 Nome = request.Nome,
                 Descricao = request.Descricao,
-                ValorUnitario = request.ValorUnitario,
+                ValorUnitarioCompra = request.ValorUnitarioCompra,
+                ValorUnitarioVenda = request.ValorUnitarioVenda,
+                Quantidade = request.Quantidade,
+                Percentual = request.Percentual,
                 ValorCobrado = request.ValorCobrado,
                 DataCadastro = DateHelper.GetLocalTime()
             };
@@ -42,7 +45,10 @@ namespace Atm.Atendimento.Api.Extensions.Entities
                 Id = entity.Id,
                 Nome = entity.Nome,
                 Descricao = entity.Descricao,
-                ValorUnitario = entity.ValorUnitario,
+                ValorUnitarioCompra = entity.ValorUnitarioCompra,
+                ValorUnitarioVenda = entity.ValorUnitarioVenda,
+                Quantidade = entity.Quantidade,
+                Percentual = entity.Percentual,
                 ValorCobrado = entity.ValorCobrado
             };
         }
