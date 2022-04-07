@@ -33,7 +33,10 @@ namespace Atm.Atendimento.Api.Features.Orçamentos.Commands.InserirOrcamentoFeat
     {
         public string Nome { get; set; }
         public string Descricao { get; set; }
-        public decimal ValorUnitario { get; set; }
+        public decimal ValorUnitarioCompra { get; set; }
+        public decimal ValorUnitarioVenda { get; set; }
+        public int Quantidade { get; set; }
+        public decimal Percentual { get; set; }
         public decimal ValorCobrado { get; set; }
     }
 
@@ -91,10 +94,12 @@ namespace Atm.Atendimento.Api.Features.Orçamentos.Commands.InserirOrcamentoFeat
                            .WithMessage("Valor unitário de produto deve ser maior que zero.");
                     produto.RuleFor(p => p.Percentual)
                            .NotNull()
-                           .WithMessage("Percentual de produto é obrigatório.");
+                           .WithMessage("Percentual de valor produto é obrigatório.");
                     produto.RuleFor(p => p.ValorTotal)
                            .NotNull()
-                           .WithMessage("Valor total de produto é obrigatório.");
+                           .WithMessage("Valor total de produto é obrigatório.")
+                           .GreaterThan(0)
+                           .WithMessage("Valor total de produto deve zer maior que zero.");
                 });
 
             RuleForEach(r => r.Pecas)
@@ -103,12 +108,29 @@ namespace Atm.Atendimento.Api.Features.Orçamentos.Commands.InserirOrcamentoFeat
                     peca.RuleFor(p => p.Nome)
                         .NotEmpty()
                         .WithMessage("Nome de peça é obrigatório.");
-                    peca.RuleFor(p => p.ValorUnitario)
+                    peca.RuleFor(p => p.ValorUnitarioCompra)
                         .NotNull()
-                        .WithMessage("Valor unitário de peça é obrigatório.");
+                        .WithMessage("Valor unitário de compra de peça é obrigatório.")
+                        .GreaterThan(0)
+                        .WithMessage("Valor unitário de compra de peça deve ser maior que zero.");
+                    peca.RuleFor(p => p.ValorUnitarioVenda)
+                        .NotNull()
+                        .WithMessage("Valor unitário de venda de peça é obrigatório.")
+                        .GreaterThan(0)
+                        .WithMessage("Valor unitário de venda de peça deve ser maior que zero.");
+                    peca.RuleFor(p => p.Quantidade)
+                        .NotNull()
+                        .WithMessage("Quantidade de peças é obrigatório.")
+                        .GreaterThan(0)
+                        .WithMessage("Quantidade de peças deve ser maior que zero.");
+                    peca.RuleFor(p => p.Percentual)
+                        .NotNull()
+                        .WithMessage("Percentual de valor de peça é obrigatório.");
                     peca.RuleFor(p => p.ValorCobrado)
                         .NotNull()
-                        .WithMessage("Valor cobrado de peça é obrigatório.");
+                        .WithMessage("Valor cobrado de peça é obrigatório.")
+                        .GreaterThan(0)
+                        .WithMessage("Valor total de peça deve zer maior que zero.");
                 });
 
             RuleForEach(r => r.Servicos)
