@@ -1,5 +1,6 @@
 ﻿using Atm.Atendimento.Api.Features.Orçamentos.Commands.AgendamentoFeature;
 using Atm.Atendimento.Api.Features.Orçamentos.Commands.AtendimentoFeature;
+using Atm.Atendimento.Api.Features.Orçamentos.Commands.AtualizarOrcamentoFeature;
 using Atm.Atendimento.Api.Features.Orçamentos.Commands.InserirOrcamentoFeature;
 using Atm.Atendimento.Api.Features.Orçamentos.Commands.RemoverOrcamentoFeature;
 using Atm.Atendimento.Api.Features.Orçamentos.Queries.SelecionarOrcamentoByIdFeature;
@@ -36,6 +37,12 @@ namespace Atm.Atendimento.Api.Features.Orçamentos
 
         [HttpPost]
         public async Task<ActionResult> Post([FromBody] InserirOrcamentoCommand request)
+        {
+            return Ok(await _mediator.Send(request));
+        }
+
+        [HttpPut]
+        public async Task<ActionResult> Put([FromBody] AtualizarOrcamentoCommand request)
         {
             return Ok(await _mediator.Send(request));
         }
