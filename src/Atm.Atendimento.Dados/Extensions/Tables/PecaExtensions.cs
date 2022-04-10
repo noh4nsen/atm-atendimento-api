@@ -10,6 +10,9 @@ namespace Atm.Atendimento.Dados.Extensions.Tables
             modelBuilder.Entity<Peca>()
                         .HasIndex(p => p.Id);
             modelBuilder.Entity<Peca>()
+                        .Property(p => p.CodigoNCM)
+                        .HasMaxLength(8);
+            modelBuilder.Entity<Peca>()
                         .Property(p => p.Nome)
                         .HasMaxLength(60)
                         .IsRequired();

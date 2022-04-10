@@ -2,6 +2,7 @@
 {
     public class Peca : Entity
     {
+        public string CodigoNCM { get; set; }
         public string Nome { get; set; }
         public string Descricao { get; set; }
         public decimal ValorUnitarioCompra{ get; set; }

@@ -236,6 +236,7 @@ namespace Atm.Atendimento.Api.Features.Orçamentos.Commands.AtualizarOrcamentoFe
                             {
                                 Id = Guid.NewGuid(),
                                 Orcamento = orcamento,
+                                CodigoNCM = peca.CodigoNCM,
                                 Nome = peca.Nome,
                                 Descricao = peca.Descricao,
                                 ValorUnitarioCompra = peca.ValorUnitarioCompra,
@@ -253,6 +254,7 @@ namespace Atm.Atendimento.Api.Features.Orçamentos.Commands.AtualizarOrcamentoFe
         {
             Peca entity = await GetPecaAsync(request, (Guid)peca.Id, cancellationToken);
 
+            entity.CodigoNCM = peca.CodigoNCM;
             entity.Nome = peca.Nome;
             entity.Descricao = peca.Descricao;
             entity.ValorUnitarioCompra = peca.ValorUnitarioCompra;

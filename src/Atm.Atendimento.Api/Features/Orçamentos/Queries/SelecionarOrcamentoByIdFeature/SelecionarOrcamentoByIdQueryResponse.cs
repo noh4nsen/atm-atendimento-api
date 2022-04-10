@@ -36,6 +36,7 @@ namespace Atm.Atendimento.Api.Features.Orçamentos.Queries.SelecionarOrcamentoBy
     public class SelecionarPecaQueryResponse
     {
         public Guid Id { get; set; }
+        public string CodigoNCM { get; set; }
         public string Nome { get; set; }
         public string Descricao { get; set; }
         public decimal ValorUnitarioCompra { get; set; }
