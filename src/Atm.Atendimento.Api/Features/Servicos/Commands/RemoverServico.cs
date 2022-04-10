@@ -4,6 +4,7 @@ using Atm.Atendimento.Repositories;
 using FluentValidation;
 using MediatR;
 using System;
+using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -36,21 +37,21 @@ namespace Atm.Atendimento.Api.Features.Servicos.Commands
                 throw new ArgumentNullException("Erro ao processar requisição.");
 
             Servico entity = await GetServicoAsync(request, cancellationToken);
-            await DeactivateServicoAsync(entity);
+            await DeactivateServicoAsync(request, entity, cancellationToken);
 
             return entity.ToRemoveResponse();
         }
 
-        private async Task DeactivateServicoAsync(Servico entity)
+        private async Task DeactivateServicoAsync(RemoverServicoCommand request, Servico entity, CancellationToken cancellationToken)
         {
-            entity.Ativo = false;
-            await _repository.UpdateAsync(entity);
+            await _validator.ValidateDataAsync(request, !entity.CustoServico.Any(), cancellationToken);
+            await _repository.RemoveAsync(entity);
             await _repository.SaveChangesAsync();
         }
 
         public async Task<Servico> GetServicoAsync(RemoverServicoCommand request, CancellationToken cancellationToken)
         {
-            Servico entity = await _repository.GetFirstAsync(s => s.Id.Equals(request.Id));
+            Servico entity = await _repository.GetFirstAsync(s => s.Id.Equals(request.Id), s => s.CustoServico);
             await _validator.ValidateDataAsync(request, entity, cancellationToken);
             return entity;
         }
@@ -70,6 +71,14 @@ namespace Atm.Atendimento.Api.Features.Servicos.Commands
             RuleFor(r => r.Id)
                 .Must(m => { return entity is not null; })
                 .WithMessage($"Serviço de id {request.Id} não encontrado.");
+            await this.ValidateAndThrowAsync(request, cancellationToken);
+        }
+
+        public async Task ValidateDataAsync(RemoverServicoCommand request, bool canRemove, CancellationToken cancellationToken)
+        {
+            RuleFor(r => r.Id)
+                .Must(m => { return canRemove is true; })
+                .WithMessage($"Serviço possui Orçamento vínculado e não pode ser removido.");
             await this.ValidateAndThrowAsync(request, cancellationToken);
         }
     }
