@@ -31,6 +31,7 @@ namespace Atm.Atendimento.Api.Features.Orçamentos.Commands.InserirOrcamentoFeat
 
     public class InserirPecaCommand
     {
+        public string CodigoNCM { get; set; }
         public string Nome { get; set; }
         public string Descricao { get; set; }
         public decimal ValorUnitarioCompra { get; set; }
@@ -105,6 +106,9 @@ namespace Atm.Atendimento.Api.Features.Orçamentos.Commands.InserirOrcamentoFeat
             RuleForEach(r => r.Pecas)
                 .ChildRules(peca =>
                 {
+                    peca.RuleFor(p => p.CodigoNCM)
+                        .NotEmpty()
+                        .WithMessage("Código NCM de peça é obrigatório.");
                     peca.RuleFor(p => p.Nome)
                         .NotEmpty()
                         .WithMessage("Nome de peça é obrigatório.");

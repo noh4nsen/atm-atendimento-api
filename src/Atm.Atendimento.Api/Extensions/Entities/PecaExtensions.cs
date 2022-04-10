@@ -16,6 +16,7 @@ namespace Atm.Atendimento.Api.Extensions.Entities
             {
                 Id = Guid.NewGuid(),
                 Ativo = true,
+                CodigoNCM = request.CodigoNCM,
                 Nome = request.Nome,
                 Descricao = request.Descricao,
                 ValorUnitarioCompra = request.ValorUnitarioCompra,
@@ -43,6 +44,7 @@ namespace Atm.Atendimento.Api.Extensions.Entities
             return new SelecionarPecaQueryResponse()
             {
                 Id = entity.Id,
+                CodigoNCM = entity.CodigoNCM,
                 Nome = entity.Nome,
                 Descricao = entity.Descricao,
                 ValorUnitarioCompra = entity.ValorUnitarioCompra,
