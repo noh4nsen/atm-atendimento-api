@@ -13,6 +13,7 @@ namespace Atm.Atendimento.Api.Features.Orçamentos.Commands.AtendimentoFeature
     public class FinalizarAtendimentoCommand : IRequest<FinalizarAtendimentoCommandResponse>
     {
         public Guid Id { get; set; }
+        public DateTime? DataHoraFim { get; set; }
     }
 
     public class FinalizarAtendimentoCommandResponse
@@ -44,14 +45,14 @@ namespace Atm.Atendimento.Api.Features.Orçamentos.Commands.AtendimentoFeature
 
             Orcamento entity = await GetOrcamentoAsync(request, cancellationToken);
             await ValidateDataFinalizacao(request, entity, cancellationToken);
-            await FinalizarAtendimentoAsync(entity);
+            await FinalizarAtendimentoAsync(request, entity);
 
             return entity.ToFinalizarAtendimentoResponse();
         }
 
-        private async Task FinalizarAtendimentoAsync(Orcamento entity)
+        private async Task FinalizarAtendimentoAsync(FinalizarAtendimentoCommand request, Orcamento entity)
         {
-            entity.ToFinalizarAtendimento();
+            entity.ToFinalizarAtendimento(request);
             await _repository.UpdateAsync(entity);
             await _repository.SaveChangesAsync();
         }

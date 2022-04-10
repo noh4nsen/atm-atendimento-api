@@ -53,9 +53,9 @@ namespace Atm.Atendimento.Api.Extensions.Entities
             entity.Status = StatusEnum.Cadastrado;
         }
 
-        public static void ToFinalizarAtendimento(this Orcamento entity)
+        public static void ToFinalizarAtendimento(this Orcamento entity, FinalizarAtendimentoCommand request)
         {
-            entity.DataHoraFim = DateHelper.GetLocalTime();
+            entity.DataHoraFim = request.DataHoraFim ?? DateHelper.GetLocalTime();
             entity.Duracao = ((DateTime)entity.DataHoraFim - (DateTime)entity.DataHoraInicio).TotalHours;
             entity.Status = StatusEnum.Finalizado;
         }
