@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Atm.Atendimento.Domain.Enum;
+using System;
 using System.Collections.Generic;
 
 namespace Atm.Atendimento.Api.Features.Orçamentos.Queries.SelecionarOrcamentoByIdFeature
@@ -10,6 +11,7 @@ namespace Atm.Atendimento.Api.Features.Orçamentos.Queries.SelecionarOrcamentoBy
         public Guid CarroId { get; set; }
         public string Descricao { get; set; }
         public decimal ValorFinal { get; set; }
+        public StatusEnum Status { get; set; }
         public ICollection<SelecionarProdutoQueryResponse> Produtos { get; set; }
         public ICollection<SelecionarPecaQueryResponse> Pecas { get; set; }
         public ICollection<SelecionarCustoServicoQueryResponse> Servicos { get; set; }

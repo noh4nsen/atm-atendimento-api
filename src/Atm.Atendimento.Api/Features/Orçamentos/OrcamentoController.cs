@@ -1,6 +1,4 @@
-﻿using Atm.Atendimento.Api.Features.Orçamentos.Commands.AgendamentoFeature;
-using Atm.Atendimento.Api.Features.Orçamentos.Commands.AtendimentoFeature;
-using Atm.Atendimento.Api.Features.Orçamentos.Commands.AtualizarOrcamentoFeature;
+﻿using Atm.Atendimento.Api.Features.Orçamentos.Commands.AtualizarOrcamentoFeature;
 using Atm.Atendimento.Api.Features.Orçamentos.Commands.InserirOrcamentoFeature;
 using Atm.Atendimento.Api.Features.Orçamentos.Commands.RemoverOrcamentoFeature;
 using Atm.Atendimento.Api.Features.Orçamentos.Queries.SelecionarOrcamentoByIdFeature;
@@ -51,18 +49,6 @@ namespace Atm.Atendimento.Api.Features.Orçamentos
         public async Task<ActionResult> Delete(Guid id)
         {
             return Ok(await _mediator.Send(new RemoverOrcamentoCommand { Id = id }));
-        }
-
-        [HttpPut("agendar")]
-        public async Task<ActionResult> Put([FromBody] AgendarAtendimentoCommand request)
-        {
-            return Ok(await _mediator.Send(request));
-        }
-
-        [HttpPut("finalizar")]
-        public async Task<ActionResult> Put([FromBody] FinalizarAtendimentoCommand request)
-        {
-            return Ok(await _mediator.Send(request));
         }
     }
 }

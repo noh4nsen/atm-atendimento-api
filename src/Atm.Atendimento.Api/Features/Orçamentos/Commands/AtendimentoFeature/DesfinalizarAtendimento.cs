@@ -10,52 +10,46 @@ using System.Threading.Tasks;
 
 namespace Atm.Atendimento.Api.Features.Orçamentos.Commands.AtendimentoFeature
 {
-    public class AgendarAtendimentoCommand : IRequest<AgendarAtendimentoCommandResponse>
+    public class DesfinalizarAtendimentoCommand : IRequest<DesfinalizarAtendimentoCommandResponse>
     {
         public Guid Id { get; set; }
-        public DateTime DataAgendamento { get; set; }
     }
 
-    public class AgendarAtendimentoCommandResponse
+    public class DesfinalizarAtendimentoCommandResponse
     {
         public Guid Id { get; set; }
-        public DateTime? DataAgendamento { get; set; }
     }
 
-    public class AgendarAtendimentoCommandHandler : IRequestHandler<AgendarAtendimentoCommand, AgendarAtendimentoCommandResponse>
+    public class DesfinalizarAtendimentoCommandHandler : IRequestHandler<DesfinalizarAtendimentoCommand, DesfinalizarAtendimentoCommandResponse>
     {
         private readonly IRepository<Orcamento> _repository;
-        private readonly AgendarAtendimentoCommandValidator _validator;
+        private readonly DesfinalizarAtendimentoCommandValidator _validator;
 
-        public AgendarAtendimentoCommandHandler
-            (
-                IRepository<Orcamento> repository,
-                AgendarAtendimentoCommandValidator validator
-            )
+        public DesfinalizarAtendimentoCommandHandler(IRepository<Orcamento> repository, DesfinalizarAtendimentoCommandValidator validator)
         {
             _repository = repository;
             _validator = validator;
         }
 
-        public async Task<AgendarAtendimentoCommandResponse> Handle(AgendarAtendimentoCommand request, CancellationToken cancellationToken)
+        public async Task<DesfinalizarAtendimentoCommandResponse> Handle(DesfinalizarAtendimentoCommand request, CancellationToken cancellationToken)
         {
             if (request is null)
                 throw new ArgumentNullException("Erro ao processar requisição.");
 
             Orcamento entity = await GetOrcamentoAsync(request, cancellationToken);
-            await AgendarOrcamentoAsync(request, entity);
+            await DesfinalizarAtendimento(entity);
 
-            return entity.ToAgendarResponse();
+            return entity.ToDesfinalizarAtendimentoResponse();
         }
 
-        private async Task AgendarOrcamentoAsync(AgendarAtendimentoCommand request, Orcamento entity)
+        private async Task DesfinalizarAtendimento(Orcamento entity)
         {
-            request.ToAgendamento(entity);
+            entity.ToDesfinalizarAtendimento();
             await _repository.UpdateAsync(entity);
             await _repository.SaveChangesAsync();
         }
 
-        private async Task<Orcamento> GetOrcamentoAsync(AgendarAtendimentoCommand request, CancellationToken cancellationToken)
+        private async Task<Orcamento> GetOrcamentoAsync(DesfinalizarAtendimentoCommand request, CancellationToken cancellationToken)
         {
             Orcamento entity = await _repository.GetFirstAsync(o => o.Id.Equals(request.Id));
             await _validator.ValidateDataAsync(request, entity, cancellationToken);
@@ -64,21 +58,18 @@ namespace Atm.Atendimento.Api.Features.Orçamentos.Commands.AtendimentoFeature
         }
     }
 
-    public class AgendarAtendimentoCommandValidator : AbstractValidator<AgendarAtendimentoCommand>
+    public class DesfinalizarAtendimentoCommandValidator : AbstractValidator<DesfinalizarAtendimentoCommand>
     {
-        public AgendarAtendimentoCommandValidator()
+        public DesfinalizarAtendimentoCommandValidator()
         {
             RuleFor(r => r.Id)
                 .NotEqual(Guid.Empty)
                 .WithMessage("Id de orçamento é obrigatório");
-            RuleFor(r => r.DataAgendamento)
-                .NotEmpty()
-                .WithMessage("Data de agendamento é obrigatório.");
         }
 
         public async Task ValidateDataAsync
             (
-                AgendarAtendimentoCommand request,
+                DesfinalizarAtendimentoCommand request,
                 Orcamento entity,
                 CancellationToken cancellationToken
             )
@@ -91,14 +82,14 @@ namespace Atm.Atendimento.Api.Features.Orçamentos.Commands.AtendimentoFeature
 
         public async Task ValidateDataAsync
             (
-                AgendarAtendimentoCommand request,
+                DesfinalizarAtendimentoCommand request,
                 StatusEnum status,
                 CancellationToken cancellationToken
             )
         {
             RuleFor(r => r.Id)
-                .Must(m => { return status == StatusEnum.Cadastrado; })
-                .WithMessage($"Orçamento de id {request.Id} já foi agendado ou finalizado");
+                .Must(m => { return status == StatusEnum.Finalizado; })
+                .WithMessage($"Agendamento de id {request.Id} ainda não foi finalizado.");
             await this.ValidateAndThrowAsync(request, cancellationToken);
         }
     }
