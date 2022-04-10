@@ -1,5 +1,4 @@
-﻿using Atm.Atendimento.Api.Features.Orçamentos.Commands.AgendamentoFeature;
-using Atm.Atendimento.Api.Features.Orçamentos.Commands.AtendimentoFeature;
+﻿using Atm.Atendimento.Api.Features.Orçamentos.Commands.AtendimentoFeature;
 using Atm.Atendimento.Api.Features.Orçamentos.Commands.InserirOrcamentoFeature;
 using Atm.Atendimento.Api.Features.Orçamentos.Commands.RemoverOrcamentoFeature;
 using Atm.Atendimento.Api.Features.Orçamentos.Queries.SelecionarOrcamentoByIdFeature;
@@ -47,11 +46,25 @@ namespace Atm.Atendimento.Api.Extensions.Entities
             entity.Status = StatusEnum.Agendado;
         }
 
+        public static void ToCancelarAgendamento(this Orcamento entity)
+        {
+            entity.DataAgendamento = null;
+            entity.DataHoraInicio = null;
+            entity.Status = StatusEnum.Cadastrado;
+        }
+
         public static void ToFinalizarAtendimento(this Orcamento entity)
         {
             entity.DataHoraFim = DateHelper.GetLocalTime();
             entity.Duracao = ((DateTime)entity.DataHoraFim - (DateTime)entity.DataHoraInicio).TotalHours;
             entity.Status = StatusEnum.Finalizado;
+        }
+
+        public static void ToDesfinalizarAtendimento(this Orcamento entity)
+        {
+            entity.DataHoraFim = null;
+            entity.Duracao = null;
+            entity.Status = StatusEnum.Agendado;
         }
 
         public static InserirOrcamentoCommandResponse ToInsertResponse(this Orcamento entity)
@@ -71,6 +84,7 @@ namespace Atm.Atendimento.Api.Extensions.Entities
                 ClienteId = entity.Cliente.IdExterno,
                 CarroId = entity.Carro.IdExterno,
                 Descricao = entity.Descricao,
+                Status = entity.Status,
                 Produtos = entity.Produtos.ToQueryResponse().ToList(),
                 Pecas = entity.Pecas.ToQueryResponse().ToList(),
                 Servicos = entity.CustoServicos.ToQueryResponse().ToList(),
@@ -86,7 +100,7 @@ namespace Atm.Atendimento.Api.Extensions.Entities
 
         public static IEnumerable<SelecionarOrcamentoByIdQueryResponse> ToFiltersQueryResponse(this IEnumerable<Orcamento> list)
         {
-            if (list.Count() == 0 && !list.Any())
+            if (!list.Any())
                 return new List<SelecionarOrcamentoByIdQueryResponse>();
 
             IList<SelecionarOrcamentoByIdQueryResponse> response = new List<SelecionarOrcamentoByIdQueryResponse>();
@@ -109,6 +123,11 @@ namespace Atm.Atendimento.Api.Extensions.Entities
             };
         }
 
+        public static CancelarAgendamentoCommandResponse ToCancelarAgendamentoResponse(this Orcamento entity)
+        {
+            return new CancelarAgendamentoCommandResponse() { Id = entity.Id };
+        }
+
         public static FinalizarAtendimentoCommandResponse ToFinalizarAtendimentoResponse(this Orcamento entity)
         {
             return new FinalizarAtendimentoCommandResponse()
@@ -116,6 +135,14 @@ namespace Atm.Atendimento.Api.Extensions.Entities
                 Id = entity.Id,
                 DataHoraFim = entity.DataHoraFim,
                 Duracao = entity.Duracao
+            };
+        }
+
+        public static DesfinalizarAtendimentoCommandResponse ToDesfinalizarAtendimentoResponse(this Orcamento entity)
+        {
+            return new DesfinalizarAtendimentoCommandResponse()
+            {
+                Id = entity.Id
             };
         }
     }
