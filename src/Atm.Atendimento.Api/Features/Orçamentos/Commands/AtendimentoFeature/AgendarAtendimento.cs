@@ -97,8 +97,8 @@ namespace Atm.Atendimento.Api.Features.Orçamentos.Commands.AtendimentoFeature
             )
         {
             RuleFor(r => r.Id)
-                .Must(m => { return status == StatusEnum.Cadastrado; })
-                .WithMessage($"Orçamento de id {request.Id} já foi agendado ou finalizado");
+                .Must(m => { return status == StatusEnum.Cadastrado || status == StatusEnum.Agendado; })
+                .WithMessage($"Orçamento de id {request.Id} já foi finalizado");
             await this.ValidateAndThrowAsync(request, cancellationToken);
         }
     }
