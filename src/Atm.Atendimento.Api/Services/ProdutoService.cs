@@ -49,7 +49,24 @@ namespace Atm.Atendimento.Api.Services
 
         public async Task<ProdutoOrcamento> PutProduto(ProdutoOrcamento produtoOrcamento)
         {
-            throw new NotImplementedException();
+            RestClient client = new RestClient(_configuration.GetValue<string>("api:fornecedor"));
+            RestRequest request = new RestRequest("produto/vender", Method.Put);
+            string token = await Autenticar();
+            request.AddHeader("Authorization", "Bearer " + token);
+            request.AddBody(new { Id = produtoOrcamento.Id, Quantidade = produtoOrcamento.Quantidade });
+
+            RestResponse<ProdutoDto> result = await client.ExecuteAsync<ProdutoDto>(request);
+
+            ProdutoDto produtoDto = result.Data;
+            ProdutoOrcamento produto = new ProdutoOrcamento();
+
+            if (produtoDto is null)
+                return null;
+            if (produtoDto.Id.Equals(Guid.Empty))
+                return null;
+
+            produto.IdExterno = produtoDto.Id;
+            return produto;
         }
 
         private class ProdutoDto
