@@ -48,6 +48,8 @@ namespace Atm.Atendimento.Api.Features.Orçamentos.Commands.AtendimentoFeature
                 throw new ArgumentNullException("Erro ao processar requisição.");
 
             Orcamento entity = await GetOrcamentoAsync(request, cancellationToken);
+            if (entity.DataAgendamento is null)
+                await VenderProduto(request, entity, cancellationToken);
             await AgendarOrcamentoAsync(request, entity, cancellationToken);
 
             return entity.ToAgendarResponse();
@@ -56,7 +58,6 @@ namespace Atm.Atendimento.Api.Features.Orçamentos.Commands.AtendimentoFeature
         private async Task AgendarOrcamentoAsync(AgendarAtendimentoCommand request, Orcamento entity, CancellationToken cancellationToken)
         {
             request.ToAgendamento(entity);
-            await VenderProduto(request, entity, cancellationToken);
             await _repository.UpdateAsync(entity);
             await _repository.SaveChangesAsync();
         }
