@@ -10,7 +10,7 @@ using System.Threading.Tasks;
 
 namespace Atm.Atendimento.Api.Features.Orçamentos.Queries.SelecionarOrcamentoFiltersFeature
 {
-    public class SelecionarOrcamentoFiltersQuery : IRequest<IEnumerable<SelecionarOrcamentoByIdQueryResponse>>
+    public class SelecionarOrcamentoFiltersQuery : IRequest<IEnumerable<SelecionarOrcamentoFiltersQueryResponse>>
     {
         public Guid ClienteId { get; set; }
         public Guid CarroId { get; set; }

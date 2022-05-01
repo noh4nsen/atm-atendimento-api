@@ -2,6 +2,7 @@
 using Atm.Atendimento.Api.Features.Orçamentos.Commands.InserirOrcamentoFeature;
 using Atm.Atendimento.Api.Features.Orçamentos.Commands.RemoverOrcamentoFeature;
 using Atm.Atendimento.Api.Features.Orçamentos.Queries.SelecionarOrcamentoByIdFeature;
+using Atm.Atendimento.Api.Features.Orçamentos.Queries.SelecionarOrcamentoFiltersFeature;
 using Atm.Atendimento.Api.Helpers;
 using Atm.Atendimento.Domain;
 using Atm.Atendimento.Domain.Enum;
@@ -98,14 +99,28 @@ namespace Atm.Atendimento.Api.Extensions.Entities
             };
         }
 
-        public static IEnumerable<SelecionarOrcamentoByIdQueryResponse> ToFiltersQueryResponse(this IEnumerable<Orcamento> list)
+        public static SelecionarOrcamentoFiltersQueryResponse ToFiltersQueryResponse(this Orcamento entity)
+        {
+            return new SelecionarOrcamentoFiltersQueryResponse()
+            {
+                Id = entity.Id,
+                ClienteId = entity.Cliente.IdExterno,
+                CarroId = entity.Carro.IdExterno,
+                ValorFinal = entity.Pagamento.ToQueryResponse().ValorFinal,
+                Status = entity.Status,
+                DataCadastro = entity.DataCadastro,
+                DataAgendamento = entity.DataAgendamento
+            };
+        }
+
+        public static IEnumerable<SelecionarOrcamentoFiltersQueryResponse> ToFiltersQueryResponse(this IEnumerable<Orcamento> list)
         {
             if (!list.Any())
-                return new List<SelecionarOrcamentoByIdQueryResponse>();
+                return new List<SelecionarOrcamentoFiltersQueryResponse>();
 
-            IList<SelecionarOrcamentoByIdQueryResponse> response = new List<SelecionarOrcamentoByIdQueryResponse>();
+            IList<SelecionarOrcamentoFiltersQueryResponse> response = new List<SelecionarOrcamentoFiltersQueryResponse>();
             foreach (Orcamento entity in list)
-                response.Add(entity.ToQueryResponse());
+                response.Add(entity.ToFiltersQueryResponse());
             return response;
         }
 

@@ -1,7 +1,9 @@
 ﻿using Atm.Atendimento.Api.Extensions.Entities;
 using Atm.Atendimento.Domain;
 using Atm.Atendimento.Domain.Enum;
+using Atm.Atendimento.Dto;
 using Atm.Atendimento.Repositories;
+using Atm.Atendimento.Services;
 using FluentValidation;
 using MediatR;
 using System;
@@ -25,15 +27,18 @@ namespace Atm.Atendimento.Api.Features.Orçamentos.Commands.AtendimentoFeature
     public class AgendarAtendimentoCommandHandler : IRequestHandler<AgendarAtendimentoCommand, AgendarAtendimentoCommandResponse>
     {
         private readonly IRepository<Orcamento> _repository;
+        private readonly IProdutoService _service;
         private readonly AgendarAtendimentoCommandValidator _validator;
 
         public AgendarAtendimentoCommandHandler
             (
                 IRepository<Orcamento> repository,
+                IProdutoService service,
                 AgendarAtendimentoCommandValidator validator
             )
         {
             _repository = repository;
+            _service = service;
             _validator = validator;
         }
 
@@ -43,21 +48,46 @@ namespace Atm.Atendimento.Api.Features.Orçamentos.Commands.AtendimentoFeature
                 throw new ArgumentNullException("Erro ao processar requisição.");
 
             Orcamento entity = await GetOrcamentoAsync(request, cancellationToken);
-            await AgendarOrcamentoAsync(request, entity);
+            if (entity.DataAgendamento is null)
+                await VenderProduto(request, entity, cancellationToken);
+            await AgendarOrcamentoAsync(request, entity, cancellationToken);
 
             return entity.ToAgendarResponse();
         }
 
-        private async Task AgendarOrcamentoAsync(AgendarAtendimentoCommand request, Orcamento entity)
+        private async Task AgendarOrcamentoAsync(AgendarAtendimentoCommand request, Orcamento entity, CancellationToken cancellationToken)
         {
             request.ToAgendamento(entity);
             await _repository.UpdateAsync(entity);
             await _repository.SaveChangesAsync();
         }
 
+        private async Task VenderProduto
+            (
+                AgendarAtendimentoCommand request,
+                Orcamento entity,
+                CancellationToken cancellationToken
+            )
+        {
+            foreach (var produto in entity.Produtos)
+            {
+                await VenderProduto(request, produto, cancellationToken);
+            }
+        }
+
+        private async Task VenderProduto
+            (
+                AgendarAtendimentoCommand request,
+                ProdutoOrcamento produto,
+                CancellationToken cancellationToken
+            )
+        {
+            await _validator.ValidateDataAsync(request, await _service.PutProduto(produto), cancellationToken);
+        }
+
         private async Task<Orcamento> GetOrcamentoAsync(AgendarAtendimentoCommand request, CancellationToken cancellationToken)
         {
-            Orcamento entity = await _repository.GetFirstAsync(o => o.Id.Equals(request.Id));
+            Orcamento entity = await _repository.GetFirstAsync(o => o.Id.Equals(request.Id), o => o.Produtos);
             await _validator.ValidateDataAsync(request, entity, cancellationToken);
             await _validator.ValidateDataAsync(request, entity.Status, cancellationToken);
             return entity;
@@ -98,7 +128,20 @@ namespace Atm.Atendimento.Api.Features.Orçamentos.Commands.AtendimentoFeature
         {
             RuleFor(r => r.Id)
                 .Must(m => { return status == StatusEnum.Cadastrado || status == StatusEnum.Agendado; })
-                .WithMessage($"Orçamento de id {request.Id} já foi finalizado");
+                .WithMessage($"Orçamento de id {request.Id} já foi finalizado.");
+            await this.ValidateAndThrowAsync(request, cancellationToken);
+        }
+
+        public async Task ValidateDataAsync
+            (
+                AgendarAtendimentoCommand request,
+                ProdutoOrcamento entity,
+                CancellationToken cancellationToken
+            )
+        {
+            RuleFor(r => r.Id)
+                .Must(m => { return entity is not null; })
+                .WithMessage($"Erro ao processar venda de produto {entity.IdExterno} no orçamento {request.Id}.");
             await this.ValidateAndThrowAsync(request, cancellationToken);
         }
     }

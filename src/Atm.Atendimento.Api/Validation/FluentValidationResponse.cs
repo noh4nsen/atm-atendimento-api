@@ -20,6 +20,8 @@ namespace Atm.Atendimento.Api.Validation
         {
             if (exception.Message.Contains("não encontrado"))
                 return StatusCodes.Status404NotFound;
+            else if (exception.Message.Contains("Usuário e/ou senha são inválidos"))
+                return StatusCodes.Status401Unauthorized;
             else
                 return StatusCodes.Status400BadRequest;
         }
@@ -29,6 +31,7 @@ namespace Atm.Atendimento.Api.Validation
             return Status switch
             {
                 StatusCodes.Status404NotFound => "Objeto não encontrado",
+                StatusCodes.Status401Unauthorized => "Não autorizado",
                 _ => "Operação inválida",
             };
         }

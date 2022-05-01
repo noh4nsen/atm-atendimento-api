@@ -14,9 +14,13 @@ namespace Atm.Atendimento.Api.Extensions
         {
             applicationBuilder.UseRouting();
             applicationBuilder.UseCors();
+            applicationBuilder.UseAuthentication();
+            applicationBuilder.UseAuthorization();
             applicationBuilder.UseEndpoints(endpoints =>
             {
-                endpoints.MapControllers();
+                endpoints
+                    .MapControllers()
+                    .RequireAuthorization();
                 endpoints.MapGet(
                     "/",
                     (context) =>
