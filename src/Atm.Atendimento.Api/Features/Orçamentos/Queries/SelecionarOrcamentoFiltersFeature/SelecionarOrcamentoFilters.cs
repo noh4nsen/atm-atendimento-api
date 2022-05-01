@@ -1,5 +1,4 @@
 ﻿using Atm.Atendimento.Api.Extensions.Entities;
-using Atm.Atendimento.Api.Features.Orçamentos.Queries.SelecionarOrcamentoByIdFeature;
 using Atm.Atendimento.Domain;
 using Atm.Atendimento.Domain.Enum;
 using Atm.Atendimento.Repositories;
@@ -13,7 +12,7 @@ using System.Threading.Tasks;
 
 namespace Atm.Atendimento.Api.Features.Orçamentos.Queries.SelecionarOrcamentoFiltersFeature
 {
-    public class SelecionarOrcamentoFiltersHandler : IRequestHandler<SelecionarOrcamentoFiltersQuery, IEnumerable<SelecionarOrcamentoByIdQueryResponse>>
+    public class SelecionarOrcamentoFiltersHandler : IRequestHandler<SelecionarOrcamentoFiltersQuery, IEnumerable<SelecionarOrcamentoFiltersQueryResponse>>
     {
         private IRepository<Orcamento> _repository;
         private readonly IRepository<CustoServico> _repositoryCustoServico;
@@ -34,7 +33,7 @@ namespace Atm.Atendimento.Api.Features.Orçamentos.Queries.SelecionarOrcamentoFi
             _validator = validator;
         }
 
-        public async Task<IEnumerable<SelecionarOrcamentoByIdQueryResponse>> Handle(SelecionarOrcamentoFiltersQuery request, CancellationToken cancellationToken)
+        public async Task<IEnumerable<SelecionarOrcamentoFiltersQueryResponse>> Handle(SelecionarOrcamentoFiltersQuery request, CancellationToken cancellationToken)
         {
             if (request is null)
                 throw new ArgumentNullException("Erro ao processar requisição.");
@@ -77,10 +76,7 @@ namespace Atm.Atendimento.Api.Features.Orçamentos.Queries.SelecionarOrcamentoFi
             IEnumerable<Orcamento> entities = await _repository.GetAsync(Predicate(request),
                                                                            o => o.Cliente,
                                                                            o => o.Carro,
-                                                                           o => o.Produtos,
-                                                                           o => o.Pagamento,
-                                                                           o => o.CustoServicos,
-                                                                           o => o.Pecas);
+                                                                           o => o.Pagamento);
             return entities;
         }
 
